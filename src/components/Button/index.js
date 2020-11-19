@@ -1,5 +1,6 @@
 import React from 'react';
-import {TouchableOpacity, Text, StyleSheet} from 'react-native';
+import PropTypes from 'prop-types';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 
 const Button = ({ children, onPress }) => {
@@ -9,6 +10,16 @@ const Button = ({ children, onPress }) => {
     </TouchableOpacity>
     )
 }
+
+Button.propTypes = {
+	children: PropTypes.any,
+	onPress: PropTypes.func
+};
+
+Button.defaultProps = {
+	children: null,
+	onPress: () => {}
+};
 
 const styles= StyleSheet.create({
     text: {

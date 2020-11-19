@@ -1,26 +1,29 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import Button from '../../component/Button'
+import PropTypes from 'prop-types';
+import { Button } from '../../components'
 import { StyleSheet, Text, View , Image} from 'react-native';
-import logo from '../../assets/logo.png';
+import { imgLogo } from '../../assets';
 
 
 
-export default function Dashboard() {
+const  Dashboard = ({ navigation }) => {
   return (
     <React.Fragment>
-      <StatusBar style="auto" />
       <View style={styles.container}>
-          <Image source={logo} style={styles.image} />
+          <Image source={imgLogo} style={styles.image} />
           <Text style={styles.text}>Jala Udang</Text>
       </View>
 
       <View style={styles.buttonWrapper}>
-      <Button>Daftar Harga</Button>
+      <Button onPress={() => navigation.navigate('PriceList')}>Daftar Harga</Button>
       </View>
     </React.Fragment>
   )
 }
+
+Dashboard.propTypes = {
+  navigation: PropTypes.object
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -42,3 +45,6 @@ const styles = StyleSheet.create({
   }
 });
 
+
+
+export default Dashboard;
