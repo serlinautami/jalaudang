@@ -1,4 +1,5 @@
 import Dashboard from './Dashboard';
 import PriceList from './PriceList';
+import PriceDetail from './PriceDetail';
 
-export { Dashboard, PriceList }
+export { Dashboard, PriceList, PriceDetail }

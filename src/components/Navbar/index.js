@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useNavigation } from '@react-navigation/native';
-import { Icon } from '../../components';
+import Icon from '../Icon';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Constants from 'expo-constants';
 
@@ -29,15 +29,28 @@ const Navbar = ({ title, onBackPress, showRightButton }) => {
     return title;
   }
 
+  const renderRightButton = () => {
+
+    if(!showRightButton) {
+      return (
+        <View style={styles.navButton}></View>
+      )
+    }
+
+    return (
+      <TouchableOpacity style={styles.navButton}>
+        <Icon icon="ic-share" width={24} height={24} />
+      </TouchableOpacity>
+    )
+  }
+
   return (
     <View style={styles.wrapper}>
       <TouchableOpacity style={styles.navButton} onPress={handleBackPress}>
         <Icon icon="ic-arrow-left" width={24} height={24} />
       </TouchableOpacity>
       <View>{renderTitle()}</View>
-      <TouchableOpacity style={styles.navButton}>
-        <Icon icon="ic-share" width={24} height={24} />
-      </TouchableOpacity>
+      {renderRightButton()}
     </View>
   )
 }
@@ -49,7 +62,7 @@ Navbar.propTypes = {
 }
 Navbar.defaultProps = {
   title: null,
-  showRightButton: true,
+  showRightButton: false,
   onBackPress: () => {}
 }
 

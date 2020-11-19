@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Navbar, PriceListItem } from '../../components';
 import { ScrollView, View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import Constants from 'expo-constants';
@@ -9,12 +10,16 @@ const buttons = [
   { title: "Urutkan", icon: "" },
 ]
 
-const PriceList = () => {
+const PriceList = ({ navigation }) => {
   const [activeButton, setActionButton] = React.useState(0);
   const [dataList, setDataList] = React.useState([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}])
   
   const handlePressButton = (index) => {
     setActionButton(index)
+  }
+
+  const navigateDetail = () => {
+    navigation.navigate('PriceDetail')
   }
 
   return (
@@ -23,7 +28,7 @@ const PriceList = () => {
         <ScrollView>
           {dataList.map((data, index) => {
             return (
-              <PriceListItem key={index} />
+              <PriceListItem onPressItem={navigateDetail} key={index} />
             )
           })}
         </ScrollView>
@@ -41,6 +46,11 @@ const PriceList = () => {
     </React.Fragment>
   )
 }
+
+
+PriceList.propTypes = {
+  navigation: PropTypes.object
+};
 
 
 const styles = StyleSheet.create({

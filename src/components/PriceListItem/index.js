@@ -1,31 +1,43 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Icon } from '../../components';
+import Icon from '../Icon';
 
 
-const PriceListItem = () => {
+const PriceListItem = ({ onPressItem, onPressShare }) => {
   return (
     <View style={styles.wrapper}>
       <View style={styles.body}>
-        <Text style={styles.priceText}>Rp. 66,0000</Text>
+        <TouchableOpacity onPress={onPressItem}>
+          <Text style={styles.priceText}>Rp. 66,0000</Text>
+        </TouchableOpacity>
         <Text style={styles.locationText}>Surabaya</Text>
       </View>
       <View style={styles.footer}>
         <View style={styles.footerInfo}>
           <Text style={styles.footerInfoText}>12 November 2020, Oleh Haryono  Angkasa</Text>
         </View>
-        <TouchableOpacity style={styles.footerAction}>
+        <TouchableOpacity onPress={onPressItem} style={styles.footerAction}>
           <Text style={styles.footerActionText}>Harga lengkap</Text>
           <Icon icon="ic-arrow-right" width={24} height={24} />
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.floatButton}>
+      <TouchableOpacity onPress={onPressShare} style={styles.floatButton}>
         <Icon icon="ic-share" width={24} height={24} />
       </TouchableOpacity>
     </View>
   )
 }
+
+
+PriceListItem.propTypes = {
+  onPressItem: PropTypes.func,
+  onPressShare: PropTypes.func
+};
+PriceListItem.defaultProps = {
+  onPressItem: () => {},
+  onPressShare: () => {}
+};
 
 const styles = StyleSheet.create({
   wrapper: {
