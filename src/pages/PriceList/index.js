@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Navbar, PriceListItem } from '../../components';
-import { ScrollView, View, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { ScrollView, View, StyleSheet, TouchableOpacity, Text, RefreshControl } from 'react-native';
 import Constants from 'expo-constants';
+import { getPriceList } from '../../services';
+import moment from 'moment';
 
 
 const buttons = [
@@ -12,23 +14,43 @@ const buttons = [
 
 const PriceList = ({ navigation }) => {
   const [activeButton, setActionButton] = React.useState(0);
-  const [dataList, setDataList] = React.useState([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}])
+  const [priceData, setPriceData] = React.useState({
+    data: [],
+    link: {},
+    meta: {}
+  });
+  const [loading, setLoading] = React.useState(false);
   
   const handlePressButton = (index) => {
     setActionButton(index)
   }
 
-  const navigateDetail = () => {
-    navigation.navigate('PriceDetail')
+  const navigateDetail = (id) => {
+    navigation.navigate('PriceDetail', { id })
   }
+
+  const getListData = React.useCallback(() => {
+    setLoading(true)
+    getPriceList().then(result => {
+      setPriceData(result);
+      setLoading(false)
+    }).catch(() => setLoading(false));
+  }, [])
+
+
+  React.useEffect(() => {
+    getListData();
+  }, [])
 
   return (
     <React.Fragment>
       <View style={styles.contentWrapper}>
-        <ScrollView>
-          {dataList.map((data, index) => {
+        <ScrollView refreshControl={
+          <RefreshControl refreshing={loading} onRefresh={getListData} />
+        } >
+          {priceData.data.map((data, index) => {
             return (
-              <PriceListItem onPressItem={navigateDetail} key={index} />
+              <PriceListItem key={index} data={data} onPressItem={() => navigateDetail(data.id)} key={index} />
             )
           })}
         </ScrollView>

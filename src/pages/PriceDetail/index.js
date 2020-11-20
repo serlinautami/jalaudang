@@ -1,43 +1,127 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Navbar } from '../../components';
-import { View, ScrollView, StyleSheet, Text } from 'react-native';
-import Constants from 'expo-constants'
+import { View, ScrollView, StyleSheet, Text, RefreshControl } from 'react-native';
+import Constants from 'expo-constants';
+import { getPriceDetail } from '../../services';
 
 
-const PriceDetail = () => {
+const PriceDetail = ({ route, navigation }) => {
+  const { id } = route.params;
+  const [loading, setLoading] = React.useState(false);
+  const [detail, setDetail] = React.useState(null);
+
+
+  const getInititalData = React.useCallback(() => {
+    setLoading(true);
+    getPriceDetail(id)
+      .then(result =>  {
+        setDetail(result.data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false))
+  }, [])
+
+
+  const renderSpecies = () => {
+    if(detail && detail.species) {
+      return detail.species.aliases || detail.species.name
+    }
+
+    return '-'
+  }
+
+  const renderLocation = () => {
+    if(detail && detail.date_region_full_name) {
+      let region = detail.date_region_full_name.split(' - ')[1];
+      return `${region}`;
+    }
+    return '-'
+  }
+
+  const renderPriceList = () => {
+    if(!detail) {
+      return null;
+    }
+
+    let objectKeys = Object.keys(detail);
+
+    objectKeys = objectKeys.filter(key => {
+      if(key.indexOf('size_') !== -1) {
+        return true;
+      }
+
+      return false;
+    });
+
+    let pricelist = objectKeys.map(key => {
+      let size = key.split('_')[1];
+      let price = detail[key] ? `Rp. ${detail[key]}` : '-'
+      return { 
+        title: `Harga Ukuran ${size}`,
+        price
+      }
+    })
+
+    return pricelist.map((data, index) => (
+      <View key={index} style={styles.sectionList}>
+        <Text style={styles.sectionListText}>{data.title}</Text>
+        <Text style={styles.sectionListText}>{data.price}</Text>
+      </View>
+    ))
+  }
+
+  const renderNote = () => {
+    if(!detail) {
+      return null;
+    }
+
+    return (
+    <View style={styles.section}>
+      <Text>Catatan:</Text>
+      <Text>{detail.remark}</Text>
+    </View>
+    )
+  }
+
+  const renderContact = () => {
+    if(!detail) {
+      return null
+    }
+
+    return (
+      <View style={styles.section}>
+        <Text>Kontak:</Text>
+        <Text>{detail.contact}</Text>
+      </View>
+    )
+  }
+
+  React.useEffect(() => {
+    getInititalData();
+  }, [])
+
   return (
     <React.Fragment>
       <View style={styles.contentWrapper}>
-        <ScrollView>
+        <ScrollView refreshControl={
+          <RefreshControl refreshing={loading} onRefresh={getInititalData} />
+        }>
           <View style={styles.divider} />
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionHeaderText}>Spesies:</Text>
-            <Text style={styles.sectionHeaderTextBlue}>Sulawesi Barat, Memuju Utara, PasanganKayu</Text>
+            <Text style={styles.sectionHeaderText}>Spesies: {renderSpecies()}</Text>
+            <Text style={styles.sectionHeaderTextBlue}>{renderLocation()}</Text>
           </View>
           <View style={styles.divider} />
-          {[...[1,2,3,4,5,6,7,8,9], ...[1,2,3,4,5,6,7,8,9]].map(val => {
-            return (
-              <View style={styles.sectionList}>
-                <Text style={styles.sectionListText}>Harga ukuran 20</Text>
-                <Text style={styles.sectionListText}>Rp90.000,00</Text>
-              </View>
-            )
-          })}
+          {renderPriceList()}
           <View style={styles.divider} />
-          <View style={styles.section}>
+          {/* <View style={styles.section}>
             <Text style={styles.sectionTitle}>Perkembangan harga (ukuran 100)</Text>
-          </View>
+          </View> */}
           <View style={styles.divider} />
-          <View style={styles.section}>
-            <Text>Catatan:</Text>
-            <Text>{`Harga dapat berubah2\nKontak 9\n085155090178\nWA Juga`}</Text>
-          </View>
+          {renderNote()}
           <View style={styles.divider} />
-          <View style={styles.section}>
-            <Text>Kontak:</Text>
-            <Text>Indrawan Lisanto - ADS Vanname - 085155090178</Text>
-          </View>
+          {renderContact()}
           <View style={styles.divider} />
         </ScrollView>
       </View>
@@ -65,6 +149,7 @@ const styles = StyleSheet.create({
     fontSize: 12
   },
   sectionHeaderTextBlue: {
+    fontSize: 14,
     fontWeight: 'bold',
     color: "#177EF4"
   },

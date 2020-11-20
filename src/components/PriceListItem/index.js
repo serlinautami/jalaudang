@@ -2,20 +2,45 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from '../Icon';
+import moment from 'moment';
 
 
-const PriceListItem = ({ onPressItem, onPressShare }) => {
+const PriceListItem = ({ data, onPressItem, onPressShare }) => {
+  const renderPrice = () => {
+    if(data.size_100) {
+      return `Rp. ${data.size_100}`
+    }
+    return '-';
+  }
+
+  const renderLocation = () => {
+    if(data.date_region_full_name) {
+      let region = data.date_region_full_name.split(' - ')[1];
+      return `${region}`;
+    }
+    return '-'
+  }
+
+  const renderInfo = () => {
+    moment.locale('id');
+
+    let date = moment(data.date).format('DD MMMM YYYY');
+    // let contact = data.contact;
+
+    return `${date}, oleh ${data.contact}`
+  }
+
   return (
     <View style={styles.wrapper}>
       <View style={styles.body}>
         <TouchableOpacity onPress={onPressItem}>
-          <Text style={styles.priceText}>Rp. 66,0000</Text>
+          <Text style={styles.priceText}>{renderPrice()}</Text>
         </TouchableOpacity>
-        <Text style={styles.locationText}>Surabaya</Text>
+        <Text style={styles.locationText}>{renderLocation()}</Text>
       </View>
       <View style={styles.footer}>
         <View style={styles.footerInfo}>
-          <Text style={styles.footerInfoText}>12 November 2020, Oleh Haryono  Angkasa</Text>
+          <Text style={styles.footerInfoText}>{renderInfo()}</Text>
         </View>
         <TouchableOpacity onPress={onPressItem} style={styles.footerAction}>
           <Text style={styles.footerActionText}>Harga lengkap</Text>
@@ -31,10 +56,12 @@ const PriceListItem = ({ onPressItem, onPressShare }) => {
 
 
 PriceListItem.propTypes = {
+  data: PropTypes.object,
   onPressItem: PropTypes.func,
   onPressShare: PropTypes.func
 };
 PriceListItem.defaultProps = {
+  data: {},
   onPressItem: () => {},
   onPressShare: () => {}
 };
@@ -57,7 +84,8 @@ const styles = StyleSheet.create({
     marginBottom: 8
   },
   locationText: {
-    fontSize: 14,
+    fontSize: 12,
+    maxWidth: 250,
     fontWeight: 'bold',
     color: "#177EF4"
   },
