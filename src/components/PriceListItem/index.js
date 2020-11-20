@@ -22,7 +22,6 @@ const PriceListItem = ({ data, onPressItem, onPressShare }) => {
   }
 
   const renderInfo = () => {
-    moment.locale('id');
 
     let date = moment(data.date).format('DD MMMM YYYY');
     // let contact = data.contact;

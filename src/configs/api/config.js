@@ -73,8 +73,6 @@ class ApiRequest {
       if(token) {
         const authData = await getStorage('authentication');
 
-        console.log('authData', authData);
-
         if(authData && authData.access_token) {
           baseHeaders['Authentication'] = `Bearer ${authData.access_token}`
         }
@@ -89,19 +87,19 @@ class ApiRequest {
         data: payload.body ? payload.body : {},
       };
 
-      console.log(
-        'API-REQUEST:',
-        requestPayload.url,
-        requestPayload,
-      );
+      // console.log(
+      //   'API-REQUEST:',
+      //   requestPayload.url,
+      //   requestPayload,
+      // );
 
       const response = await apiInstance.request(requestPayload);
 
-      console.log(
-        'API-RESPONSE:',
-        requestPayload.url,
-        response,
-      );
+      // console.log(
+      //   'API-RESPONSE:',
+      //   requestPayload.url,
+      //   response,
+      // );
 
       return response;
     } catch (err) {

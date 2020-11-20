@@ -4,7 +4,6 @@ import { Navbar, PriceListItem } from '../../components';
 import { ScrollView, View, StyleSheet, TouchableOpacity, Text, RefreshControl } from 'react-native';
 import Constants from 'expo-constants';
 import { getPriceList } from '../../services';
-import moment from 'moment';
 
 
 const buttons = [

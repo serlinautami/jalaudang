@@ -10,7 +10,7 @@ export const setStorage = async (key, value) => {
     await AsyncStorage.setItem(key, data);
     return value;
   } catch (err) {
-    console.log('error storage', err)
+    // console.log('error storage', err)
   }
 }
 
@@ -28,7 +28,7 @@ export const getStorage = async (key) => {
 
     return JSON.parse(data);
   } catch (err) {
-    console.log('error storage', err)
+    // console.log('error storage', err)
   }
 }
 
@@ -41,6 +41,6 @@ export const deleteStorage = async (key) => {
     await AsyncStorage.removeItem(key);
     return true;
   } catch (err) {
-    console.log('error storage', err)
+    // console.log('error storage', err)
   }
 }
