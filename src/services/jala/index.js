@@ -7,7 +7,8 @@ const initialParams = {
   country_id: 'ID',
   currency_id: 'IDR',
   not_null:'size_100',
-  not_zero:'size_100'
+  not_zero:'size_100',
+  per_page: 100
 }
 
 
@@ -96,16 +97,38 @@ export const getPriceDetail = async (id, payload) => {
  * @description Function api untuk memanggil daftar wilayah yang tersedia
  * @param {*} payload
  */
-export const getRegionList = async (payload) => {
+export const getRegionList = async (payload= {}) => {
   try {
     const requestPayload = {
       ...payload,
+      params: {
+        scope: 'province',
+        per_page: 100,
+        has: 'shrimp_prices',
+        simple: 1,
+        ...payload.params,
+      }
     }
     
     // pemanggilan api untuk daftar wilayah
     const response = await API.region(requestPayload);
 
-    return response
+    console.log('response', response)
+
+    if(!response || !response.data || !response.data.data) {
+      throw new Error('No Data Found')
+    }
+
+    const { data } = response.data;
+
+    let provinceList = data.filter(val => {
+      if(val && val.country_id === "ID") {
+        return true;
+      }
+
+      return false
+    })
+    return provinceList
   } catch (err) {
     throw err;
   }

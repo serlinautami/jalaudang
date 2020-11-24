@@ -87,19 +87,19 @@ class ApiRequest {
         data: payload.body ? payload.body : {},
       };
 
-      // console.log(
-      //   'API-REQUEST:',
-      //   requestPayload.url,
-      //   requestPayload,
-      // );
+      console.log(
+        'API-REQUEST:',
+        requestPayload.url,
+        requestPayload,
+      );
 
       const response = await apiInstance.request(requestPayload);
 
-      // console.log(
-      //   'API-RESPONSE:',
-      //   requestPayload.url,
-      //   response,
-      // );
+      console.log(
+        'API-RESPONSE:',
+        requestPayload.url,
+        response,
+      );
 
       return response;
     } catch (err) {

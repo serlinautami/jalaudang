@@ -47,7 +47,7 @@ const Navbar = ({ title, onBackPress, showRightButton }) => {
   return (
     <View style={styles.wrapper}>
       <TouchableOpacity style={styles.navButton} onPress={handleBackPress}>
-        <Icon icon="ic-arrow-left" width={24} height={24} />
+        <Icon fill="#000" icon="ic-arrow-left" width={24} height={24} />
       </TouchableOpacity>
       <View>{renderTitle()}</View>
       {renderRightButton()}

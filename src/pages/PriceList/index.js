@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Navbar, PriceListItem } from '../../components';
-import { ScrollView, View, StyleSheet, TouchableOpacity, Text, RefreshControl } from 'react-native';
+import { Navbar, PriceListItem, ModalFilter } from '../../components';
+import { ScrollView, View, StyleSheet, TouchableOpacity, Text, RefreshControl, Modal, KeyboardAvoidingView } from 'react-native';
 import Constants from 'expo-constants';
 import { getPriceList } from '../../services';
 
@@ -19,13 +19,51 @@ const PriceList = ({ navigation }) => {
     meta: {}
   });
   const [loading, setLoading] = React.useState(false);
+
+  const [showFilter, setShowFilter] = React.useState(false);
+
+  const [regionData, setRegionData] = React.useState(null);
   
   const handlePressButton = (index) => {
     setActionButton(index)
+
+    if(index === 0) {
+      setShowFilter(true);
+    } else {
+
+    }
+  }
+
+  const handleModalClose = () => {
+    setShowFilter(false)
   }
 
   const navigateDetail = (id) => {
     navigation.navigate('PriceDetail', { id })
+  }
+
+  const handleChangeSelectRegionData = (data) => {
+    setRegionData(data)
+  }
+
+  const handlePressFilter = () => {
+    const payload = {
+      params: {
+        region_id: regionData && regionData.id
+      }
+    }
+    setLoading(true);
+    setShowFilter(false);
+    getPriceList(payload).then(result => {
+      setPriceData(result);
+      setLoading(false);
+    }).catch(() => setLoading(false))
+  }
+
+  const handlePressResetFilter = () => {
+    setRegionData(null);
+    setShowFilter(false);
+    getListData();
   }
 
   const getListData = React.useCallback(() => {
@@ -42,7 +80,7 @@ const PriceList = ({ navigation }) => {
   }, [])
 
   return (
-    <React.Fragment>
+    <KeyboardAvoidingView keyboardVerticalOffset={0} behavior="padding" style={{flex: 1}}>
       <View style={styles.contentWrapper}>
         <ScrollView refreshControl={
           <RefreshControl refreshing={loading} onRefresh={getListData} />
@@ -64,7 +102,8 @@ const PriceList = ({ navigation }) => {
         })}
       </View>
       <Navbar title="Harga Udang"/>
-    </React.Fragment>
+      <ModalFilter onPressFilter={handlePressFilter} onPressResetFilter={handlePressResetFilter}  onSelectChange={handleChangeSelectRegionData} visible={showFilter} onPressClose={handleModalClose} />
+    </KeyboardAvoidingView>
   )
 }
 
