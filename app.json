@@ -4,12 +4,12 @@
     "slug": "jalaudang",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/images/img-icon.png",
+    "icon": "./src/assets/images/img-logo.png",
     "entryPoint": "./src/App.js",
     "splash": {
-      "image": "./src/assets/images/img-splash.png",
+      "image": "./src/assets/images/img-logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#EAEFF5"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
