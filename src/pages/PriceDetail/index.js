@@ -187,7 +187,7 @@ const PriceDetail = ({ route, navigation }) => {
     })
 
 
-    console.log('xLabels', yLabels, xLabels)
+    // console.log('xLabels', yLabels, xLabels)
 
     return (
         <LineChart

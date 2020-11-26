@@ -113,7 +113,7 @@ export const getRegionList = async (payload= {}) => {
     // pemanggilan api untuk daftar wilayah
     const response = await API.region(requestPayload);
 
-    console.log('response', response)
+    // console.log('response', response)
 
     if(!response || !response.data || !response.data.data) {
       throw new Error('No Data Found')
