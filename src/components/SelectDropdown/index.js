@@ -5,7 +5,7 @@ import { View, Text, TextInput, ScrollView, StyleSheet, TouchableOpacity, Alert 
 
 // format items
 
-const SelectDropdown = ({ items, onSelectChange, optionLabel, optionValue, onInputSearchChange, isLoading }) => {
+const SelectDropdown = ({ items, onSelectChange, optionLabel, optionValue, onInputSearchChange, isLoading, searchInput }) => {
 
   const [showDropdown, setDropdown] = React.useState(false);
   const [filterText, setFilterText] = React.useState('');
@@ -63,10 +63,12 @@ const SelectDropdown = ({ items, onSelectChange, optionLabel, optionValue, onInp
       </TouchableOpacity>
       {showDropdown && (
         <View style={styles.dropdownWrapper}>
-          <View style={styles.searchInputWrapper}>
-            <TextInput showSoftInputOnFocus={true} onChangeText={handleSearchChange} placeholder="Cari Lokasi.." style={styles.searchTextInput} value={filterText} />
-            <Icon style={styles.searchIcon} fill="#aaa" icon="ic-search" width={24} height={24} />
-          </View>
+          {searchInput ? (
+            <View style={styles.searchInputWrapper}>
+              <TextInput showSoftInputOnFocus={true} onChangeText={handleSearchChange} placeholder="Cari Lokasi.." style={styles.searchTextInput} value={filterText} />
+              <Icon style={styles.searchIcon} fill="#aaa" icon="ic-search" width={24} height={24} />
+            </View>
+          ): null}
           <View style={styles.listWrapper}>
             <ScrollView>
               {isLoading ? (
@@ -98,6 +100,7 @@ const SelectDropdown = ({ items, onSelectChange, optionLabel, optionValue, onInp
 }
 
 SelectDropdown.propTypes = {
+  searchInput: PropTypes.bool,
   items: PropTypes.array,
   isLoading: PropTypes.bool,
   optionLabel: PropTypes.string,
@@ -107,6 +110,7 @@ SelectDropdown.propTypes = {
 }
 SelectDropdown.defaultProps = {
   items: [],
+  searchInput: true,
   isLoading: false,
   optionLabel: "label",
   optionValue: "value",

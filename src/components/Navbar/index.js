@@ -6,7 +6,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Constants from 'expo-constants';
 
 
-const Navbar = ({ title, onBackPress, showRightButton }) => {
+const Navbar = ({ title, onBackPress, showRightButton, onRightPress }) => {
 
   const navigation = useNavigation();
 
@@ -38,7 +38,7 @@ const Navbar = ({ title, onBackPress, showRightButton }) => {
     }
 
     return (
-      <TouchableOpacity style={styles.navButton}>
+      <TouchableOpacity onPress={onRightPress} style={styles.navButton}>
         <Icon icon="ic-share" width={24} height={24} />
       </TouchableOpacity>
     )
@@ -57,13 +57,15 @@ const Navbar = ({ title, onBackPress, showRightButton }) => {
 
 Navbar.propTypes = {
   title: PropTypes.any,
+  onRightPress: PropTypes.func,
   showRightButton: PropTypes.bool,
   onBackPress: PropTypes.func
 }
 Navbar.defaultProps = {
   title: null,
   showRightButton: false,
-  onBackPress: () => {}
+  onBackPress: () => {},
+  onRightPress: () => {}
 }
 
 const styles = StyleSheet.create({

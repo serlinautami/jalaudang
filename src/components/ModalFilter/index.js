@@ -19,7 +19,7 @@ const ModalFilter = ({ visible, onPressClose, onPressResetFilter, onPressFilter,
   }, [])
 
   const handleInputSearchChange = (value = '') => {
-    if(value && value.length > 1) {
+    if(value && value.length > 0) {
       setLoading(true);
       getRegionList({
         params: {

@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Navbar } from '../../components';
-import { View, ScrollView, StyleSheet, Text, RefreshControl } from 'react-native';
+import { View, ScrollView, StyleSheet, Text, RefreshControl, Dimensions, Share } from 'react-native';
 import Constants from 'expo-constants';
 import { getPriceDetail } from '../../services';
+import { LineChart } from "react-native-chart-kit";
+import moment from 'moment';
 
 
 const PriceDetail = ({ route, navigation }) => {
@@ -21,6 +23,34 @@ const PriceDetail = ({ route, navigation }) => {
       })
       .catch(() => setLoading(false))
   }, [])
+
+  const onShare = async (data = {}) => {
+    try {
+
+      let region = '';
+
+      if(data.date_region_full_name) {
+        let region = data.date_region_full_name.split(' - ')[1];
+      }
+
+
+      const result = await Share.share({
+        message:
+          `Harga Udang daerah ${region}`,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
 
 
   const renderSpecies = () => {
@@ -54,7 +84,13 @@ const PriceDetail = ({ route, navigation }) => {
       return false;
     });
 
-    let pricelist = objectKeys.map(key => {
+    let pricelist = objectKeys.filter(key => {
+      let size = key.split('_')[1];
+      if(size >= 30 && size <= 120) {
+        return true;
+      }
+      false;
+    }).map(key => {
       let size = key.split('_')[1];
       let price = detail[key] ? `Rp. ${detail[key]}` : '-'
       return { 
@@ -97,6 +133,103 @@ const PriceDetail = ({ route, navigation }) => {
     )
   }
 
+  const renderStatus = () => {
+    if(!detail) {
+      return null
+    }
+
+    return (
+      <View style={styles.section}>
+        <Text>Diedit pada:</Text>
+    <Text>{moment(detail.updated_at).format('DD MMMM YYYY')}, Oleh {detail.creator && detail.creator.name}</Text>
+      </View>
+    )
+  }
+
+  const renderChart = () => {
+    if(!detail) {
+      return null;
+    }
+
+    let objectKeys = Object.keys(detail);
+
+    objectKeys = objectKeys.filter(key => {
+      if(key.indexOf('size_') !== -1) {
+        return true;
+      }
+
+      return false;
+    });
+
+
+    let yLabels = [];
+    let xLabels = [];
+
+    let pricelist = objectKeys.filter(key => {
+      let size = key.split('_')[1];
+      if(size >= 30 && size <= 120) {
+        return true;
+      }
+      false;
+    }).map(key => {
+      let size = key.split('_')[1];
+      let price = detail[key] ? `Rp. ${detail[key]}` : '-'
+
+      if(detail[key]) {
+        yLabels.push(size);
+        xLabels.push(detail[key]);
+      }
+
+      return { 
+        title: `Harga Ukuran ${size}`,
+        price
+      }
+    })
+
+
+    console.log('xLabels', yLabels, xLabels)
+
+    return (
+        <LineChart
+        data={{
+          labels: yLabels,
+          datasets: [
+            {
+              data: xLabels
+            }
+          ]
+        }}
+        width={Dimensions.get("window").width - 24 * 2} // from react-native
+        height={220}
+        yAxisInterval={1} // optional, defaults to 1
+        chartConfig={{
+          backgroundColor: "#ffffff",
+          backgroundGradientFrom: "#ffffff",
+          backgroundGradientTo: "#ffffff",
+          decimalPlaces: 2, // optional, defaults to 2dp
+          color: (opacity = 1) => `#177EF4`,
+          labelColor: (opacity = 1) => `#000`,
+          style: {
+            borderRadius: 16
+          },
+          propsForDots: {
+            r: "6",
+            strokeWidth: "2",
+            stroke: "#177EF4"
+          }
+        }}
+        withInnerLines={false}
+        withVerticalLines={false}
+        withHorizontalLines={false}
+        bezier
+        style={{
+          marginVertical: 24,
+          borderRadius: 16
+        }}
+      />
+    )
+  }
+
   React.useEffect(() => {
     getInititalData();
   }, [])
@@ -115,17 +248,19 @@ const PriceDetail = ({ route, navigation }) => {
           <View style={styles.divider} />
           {renderPriceList()}
           <View style={styles.divider} />
-          {/* <View style={styles.section}>
+          <View style={styles.section}>
             <Text style={styles.sectionTitle}>Perkembangan harga (ukuran 100)</Text>
-          </View> */}
+            {renderChart()}
+          </View>
           <View style={styles.divider} />
           {renderNote()}
           <View style={styles.divider} />
           {renderContact()}
           <View style={styles.divider} />
+          {renderStatus()}
         </ScrollView>
       </View>
-      <Navbar showRightButton title="Detail Harga Udang"/>
+      <Navbar onRightPress={() => onShare(detail)} showRightButton title="Detail Harga Udang"/>
     </React.Fragment>
   )
 }
